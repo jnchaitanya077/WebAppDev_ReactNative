@@ -5,20 +5,26 @@ import {
   Text,
   ScrollView,
   StyleSheet,
-  Switch,
-  Alert,
   TextInput,
   TouchableOpacity,
 } from "react-native";
 import { CheckBox, Card } from "react-native-elements";
 import Constants from "expo-constants";
+import DatePicker from "react-native-datepicker";
 
 let id = 0;
 
 const Todo = (props) => (
   <View style={styles.todoContainer}>
-    <CheckBox checked={props.todo.checked} onPress={props.onTodoClick} />
-    <Text style={{ fontSize: 20, fontWeight: "300", color: "black" }}>
+    <CheckBox
+      checked={props.todo.checked}
+      onPress={props.onTodoClick}
+      style={{ paddingRight: 0 }}
+    />
+    <Text style={{ color: "white", paddingRight: 10 }}>
+      {props.todo.dueDate}
+    </Text>
+    <Text style={{ fontSize: 20, fontWeight: "300", color: "white" }}>
       {props.todo.text}
     </Text>
     <TouchableOpacity style={[styles.button]} onPress={props.onDelete}>
@@ -33,22 +39,29 @@ export default class App extends React.Component {
     this.state = {
       todos: [],
       text: "",
+      dueDate: "",
     };
   }
 
-  addTodo(text) {
-    id++;
-    this.setState({
-      todos: [
-        ...this.state.todos,
-        { id: id, text: text, checked: false, dueDate: Date.now() },
-      ],
-      text: "",
-    });
+  addTodo(text, date) {
+    if (text !== "") {
+      id++;
+      this.setState({
+        todos: [
+          ...this.state.todos,
+          { id: id, text: text, checked: false, dueDate: date },
+        ],
+        text: "",
+      });
+    }
   }
 
   takeInput = (input) => {
     this.setState({ text: input });
+  };
+
+  dateChange = (date) => {
+    this.setState({ dueDate: date });
   };
 
   removeTodo(id) {
@@ -65,6 +78,7 @@ export default class App extends React.Component {
           id: todo.id,
           text: todo.text,
           checked: !todo.checked,
+          dueDate: todo.dueDate,
         };
       }),
     });
@@ -82,21 +96,47 @@ export default class App extends React.Component {
           onChangeText={this.takeInput}
           value={this.state.text}
         />
-        <TouchableOpacity
-          style={[styles.butt, styles]}
-          onPress={() => this.addTodo(this.state.text)}
-        >
-          <Text style={[styles.buttontext]}>ADD</Text>
-        </TouchableOpacity>
-        <ScrollView>
+        <View style={[styles.appdate]}>
+          <DatePicker
+            style={{ width: 200 }}
+            date={this.state.dueDate}
+            mode="date"
+            placeholder="select date"
+            format="DD-MM-YYYY"
+            minDate="01-01-2020"
+            maxDate="01-01-2100"
+            confirmBtnText="Confirm"
+            cancelBtnText="Cancel"
+            customStyles={{
+              dateIcon: {
+                position: "absolute",
+                left: 0,
+                top: 4,
+                marginLeft: 0,
+              },
+              dateInput: {
+                marginLeft: 36,
+              },
+              // ... You can check the source to find the other keys.
+            }}
+            onDateChange={this.dateChange}
+          />
+          <TouchableOpacity
+            style={[styles.addbutton, styles]}
+            onPress={() => this.addTodo(this.state.text, this.state.dueDate)}
+          >
+            <Text style={[styles.buttontext]}>ADD</Text>
+          </TouchableOpacity>
+        </View>
+        <ScrollView style={{ backgroundColor: "black", marginBottom: 10 }}>
           {this.state.todos.map((todo) => (
-            <Card style={styles.card}>
+            <View>
               <Todo
                 onTodoClick={() => this.toggleTodo(todo.id)}
                 todo={todo}
                 onDelete={() => this.removeTodo(todo.id)}
               />
-            </Card>
+            </View>
           ))}
         </ScrollView>
       </View>
@@ -109,18 +149,22 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     paddingTop: 10,
+    paddingBottom: 20,
   },
   appContainer: {
     paddingTop: Constants.statusBarHeight,
+  },
+  appdate: {
+    flexDirection: "row",
   },
   fill: {
     flex: 1,
     backgroundColor: "black",
   },
 
-  butt: {
+  addbutton: {
     display: "flex",
-    height: 45,
+    height: 40,
     borderRadius: 0,
     justifyContent: "center",
     alignItems: "center",
@@ -129,11 +173,10 @@ const styles = StyleSheet.create({
     marginRight: "auto",
 
     backgroundColor: "#2AC062",
-    shadowColor: "#2AC062",
-    shadowOpacity: 0.4,
     shadowOffset: { height: 10, width: 0 },
     shadowRadius: 20,
   },
+
   button: {
     display: "flex",
     justifyContent: "center",
