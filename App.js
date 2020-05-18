@@ -12,7 +12,7 @@ import {
 } from "react-native";
 import { CheckBox, Card } from "react-native-elements";
 import Constants from "expo-constants";
-
+//react native todo list
 let id = 0;
 
 const Todo = (props) => (
