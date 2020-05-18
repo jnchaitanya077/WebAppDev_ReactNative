@@ -5,14 +5,12 @@ import {
   Text,
   ScrollView,
   StyleSheet,
-  Switch,
-  Alert,
   TextInput,
   TouchableOpacity,
 } from "react-native";
 import { CheckBox, Card } from "react-native-elements";
 import Constants from "expo-constants";
-//react native todo list
+
 let id = 0;
 
 const Todo = (props) => (
@@ -83,14 +81,14 @@ export default class App extends React.Component {
           value={this.state.text}
         />
         <TouchableOpacity
-          style={[styles.butt, styles]}
+          style={[styles.addbutton, styles]}
           onPress={() => this.addTodo(this.state.text)}
         >
           <Text style={[styles.buttontext]}>ADD</Text>
         </TouchableOpacity>
-        <ScrollView>
+        <ScrollView style={{ backgroundColor: "white" }}>
           {this.state.todos.map((todo) => (
-            <Card style={styles.card}>
+            <Card>
               <Todo
                 onTodoClick={() => this.toggleTodo(todo.id)}
                 todo={todo}
@@ -115,10 +113,10 @@ const styles = StyleSheet.create({
   },
   fill: {
     flex: 1,
-    backgroundColor: "black",
+    backgroundColor: "white",
   },
 
-  butt: {
+  addbutton: {
     display: "flex",
     height: 45,
     borderRadius: 0,
@@ -134,6 +132,7 @@ const styles = StyleSheet.create({
     shadowOffset: { height: 10, width: 0 },
     shadowRadius: 20,
   },
+
   button: {
     display: "flex",
     justifyContent: "center",
@@ -145,7 +144,7 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     fontSize: 30,
     fontWeight: "300",
-    color: "white",
+    color: "black",
   },
   input: {
     height: 40,
@@ -155,7 +154,7 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     fontWeight: "300",
     fontSize: 20,
-    color: "white",
+    color: "black",
   },
   buttontext: {
     fontWeight: "300",
