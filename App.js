@@ -42,7 +42,7 @@ export default class App extends React.Component {
       dueDate: "",
     };
   }
-
+  // add task only when text is not empty
   addTodo(text, date) {
     if (text !== "") {
       id++;
